@@ -1,5 +1,5 @@
-import torch
 import torch.nn as nn
+from torch import Tensor
 
 class MLPRegressor(nn.Module):
     def __init__(self, 
