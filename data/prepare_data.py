@@ -13,15 +13,13 @@ from typing import List
 #Configuration
 ## to do ##
 NUM_FEATURES: List[str] = []
-BIN_FEATURES: List[str] = []
-CAT_FEATURES: List[str] = []
 TARGET_Y: str = ''
 
 
 #task metadata
 TASK_INFO = {
     'task_type':'regression',
-    'score':'RMSE',
+    'score':'rmse',
 }
 
 
@@ -43,7 +41,7 @@ def create_data_dir_from_csv(
         logger.error(f'File not found at {csv_path}')
         return
 
-    X = df[*NUM_FEATURES,*BIN_FEATURES,*CAT_FEATURES]
+    X = df[*NUM_FEATURES]
     Y = df[TARGET_Y].values
 
     X_train_val, X_test, Y_train_val, Y_test = train_set_split(
@@ -51,7 +49,7 @@ def create_data_dir_from_csv(
         TASK_INFO['task_type'] != 'regression' else None
     )
     X_train, X_val, Y_train, Y_val = train_set_split(
-        X_train_val,Y_train_val,test_size=val_size, random_state=random_state, stratify=Y if 
+        X_train_val,Y_train_val,test_size=val_size, random_state=random_state, stratify=Y_train_val if 
         TASK_INFO['task_type'] != 'regression' else None
     )
 
@@ -61,19 +59,15 @@ def create_data_dir_from_csv(
         'test' : {X_test, Y_test}
     }
 
+
     for part, (X_part, Y_part) in splits.items():
         logger.info(f'Saving {part} split (size :{len(X_part)})')
         
         if NUM_FEATURES:
-            X_num = X_part[NUM_FEATURES].values
-            np.save(output_dir/f'X_num_{part}.npy', X_num.astype(np.float32))
+            X_data = X_part[NUM_FEATURES].value
+            np.save(output_dir/f'X_{part}.npy', X_data.astype(np.float32))
         
-        if BIN_FEATURES:
-            X_bin = X_part[BIN_FEATURES].values
-            np.save(output_dir/f'X_bin_{part}.npy', X_bin.astype(np.float32))
-        if CAT_FEATURES:
-            X_cat = X_part[CAT_FEATURES].values
-            np.save(output_dir/f'X_cat_{part}.npy', X_cat.astype(np.int64))
+
         Y_dtype = np.float32 if TASK_INFO['task_type'] == 'regression' else np.int64
         np.save(output_dir/f'Y_{part}.npy', Y_part.astype(Y_dtype))
 
