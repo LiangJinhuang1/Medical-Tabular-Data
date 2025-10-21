@@ -21,7 +21,7 @@ TARGET_Y: str = ''
 #task metadata
 TASK_INFO = {
     'task_type':'regression',
-    'score':'ROC_AUC',
+    'score':'RMSE',
 }
 
 
