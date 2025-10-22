@@ -1,0 +1,12 @@
+{
+    "train_csv_name": "my_train_data.csv",
+    "val_csv_name": "my_val_data.csv",
+    "task_type": "regression",
+    "score": "rmse",
+    "target_col": "",
+    "feature_cols": [
+    ],
+    "split_ratios": {
+      "test_size": 0.25
+    }
+  }
