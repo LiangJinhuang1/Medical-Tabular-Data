@@ -1,10 +1,10 @@
-import argparse
-import yaml
 import torch
 from torch.optim import Adam
 from torch.nn import MSELoss
-from torch.utils.data import DataLoader
-
+from src.data.dataloader import create_dataloader
+from src.utils.config import load_config, get_config_value
+from src.utils.arg_parser import build_arg_parser
+from src.utils.seed import set_seed
 from src.models.TabM.tabM import TabM
 from src.data.load_data import load_data
 from src.models.MLP import MLPRegressor
@@ -13,34 +13,16 @@ from src.training.train_loop import train_loop
 from src.eval.eval_loop import eval_loop
 
 
-def load_config(config_path):
-    """Load YAML configuration file"""
-    with open(config_path, 'r') as f:
-        return yaml.safe_load(f)
 
-
-def get_config_value(config, *keys, default=None):
-    """Helper to safely get nested config values"""
-    for key in keys:
-        config = config.get(key, {})
-    return config if isinstance(config, dict) else (config if config is not None else default)
-
-
-def create_dataloader(dataset, batch_size, shuffle, config):
-    """Create DataLoader with config"""
-    loader_cfg = config.get('loader', {})
-    return DataLoader(
-        dataset, batch_size=batch_size, shuffle=shuffle,
-        num_workers=loader_cfg.get('num_workers', 0),
-        pin_memory=loader_cfg.get('pin_memory', False),
-        prefetch_factor=loader_cfg.get('prefetch_factor', None),
-        persistent_workers=loader_cfg.get('persistent_workers', False),
-    )
 
 
 def main(args):
     paths_cfg = load_config(args.exp_path)
     train_args = load_config(args.train_args)
+    
+    # Set seed for reproducibility
+    seed = train_args.get('seed', 42)
+    set_seed(seed)
     
     # Get paths with CLI override
     train_file = args.train_file or get_config_value(paths_cfg, 'paths', 'train_file')
@@ -124,15 +106,6 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Train MLP and TabM models on medical tabular data')
-    
-    parser.add_argument('--exp-path', type=str, default='configs/__base__/exp_path.yaml', help='Experiment paths YAML')
-    parser.add_argument('--train-args', type=str, default='configs/__base__/train_argument.yaml', help='Training arguments YAML')
-    parser.add_argument('--train-file', type=str, default=None, help='Override: training CSV path')
-    parser.add_argument('--val-file', type=str, default=None, help='Override: validation CSV path')
-    parser.add_argument('--target-col', type=str, default=None, help='Override: target column')
-    parser.add_argument('--mlp-config', type=str, default=None, help='Override: MLP config YAML path')
-    parser.add_argument('--tabm-config', type=str, default=None, help='Override: TabM config YAML path')
-    
+    parser = build_arg_parser()
     args = parser.parse_args()
     main(args)
