@@ -1,0 +1,4 @@
+data:
+  train_file: data/train_data.csv
+  val_file: data/val_data.csv
+  target_col: LVEF_dis

@@ -1,6 +1,7 @@
- # Experiment paths
- train_file: data/train_data.csv
- val_file: data/val_data.csv
- target_col: LVEF_dis
- mlp_config: configs/models/MLP.yaml
- tabm_config: configs/models/tabM.yaml
+# Experiment paths
+paths:
+  train_file: data/train_data.csv
+  val_file: data/val_data.csv
+  target_col: LVEF_dis
+  mlp_config: configs/models/MLP.yaml
+  tabm_config: configs/models/tabM.yaml
