@@ -12,15 +12,15 @@ class MLPRegressor(nn.Module):
         layers =[] #list[nn.Module]
         prev = in_dim
         for h in hidden_size:
-            layes += [nn.Linear(prev,h)]
+            layers += [nn.Linear(prev,h)]
             if batchnorm: 
-                layers += [nn.BtachNorm1d(h)]
-                layers += [nn.ReLU()]
+                layers += [nn.BatchNorm1d(h)]
+            layers += [nn.ReLU()]
             if dropout > 0:
                 layers += [nn.Dropout(dropout)]
             prev = h
         layers += [nn.Linear(prev,1)] # regression head
-        self.net = nn.sequential(*layers)
+        self.net = nn.Sequential(*layers)
 
     def forward(self,x:Tensor)->Tensor:
         return self.net(x)

@@ -1,0 +1,10 @@
+# TabM Model Configuration
+hidden_size: [128, 128]
+k_heads: 8
+adapter_dim: null
+dropout: 0.1
+
+# Training Configuration
+learning_rate: 0.001
+epochs: 10
+batch_size: 64

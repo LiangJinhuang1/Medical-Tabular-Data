@@ -1,0 +1,10 @@
+# MLP Model Configuration
+hidden_size: [128, 64]
+dropout: 0.3
+batchnorm: true
+activation: 'ReLU'
+
+# Training Configuration
+learning_rate: 0.001
+epochs: 10
+batch_size: 64
