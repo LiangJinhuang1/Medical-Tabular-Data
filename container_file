@@ -32,11 +32,8 @@ USER ${USER}
 
 # Install your Python deps
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir jupyterlab ipykernel
+    pip install --no-cache-dir -r requirements.txt
 
-# (Optional) make a named kernel show up as "proj-kernel"
-RUN python -m ipykernel install --user --name=proj-kernel
 
 # Default command: run the training script (override in docker run if needed)
 CMD ["python", "main.py"]
