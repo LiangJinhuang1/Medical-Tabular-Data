@@ -1,0 +1,16 @@
+jupyterlab
+ipykernel
+# Core numerical stack
+numpy
+pandas
+
+# ML libraries
+scikit-learn
+torch
+
+# Plotting
+matplotlib
+
+# Utilities
+PyYAML
+loguru

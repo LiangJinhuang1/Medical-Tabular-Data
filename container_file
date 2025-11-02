@@ -1,0 +1,42 @@
+# Dockerfile
+FROM python:3.11-slim
+
+# System deps (add what you need)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create a non-root user (safer)
+ARG USER=app
+RUN useradd -m ${USER}
+
+# Create work directory and output directory with correct permissions
+WORKDIR /home/${USER}/work
+RUN mkdir -p /home/${USER}/work/output && \
+    chown -R ${USER}:${USER} /home/${USER}/work
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PATH="/home/${USER}/.local/bin:${PATH}"
+
+# Copy project files first (as root)
+COPY requirements.txt .
+COPY . .
+
+# Change ownership of copied files to app user
+RUN chown -R ${USER}:${USER} /home/${USER}/work
+
+# Switch to non-root user
+USER ${USER}
+
+# Install your Python deps
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir jupyterlab ipykernel
+
+# (Optional) make a named kernel show up as "proj-kernel"
+RUN python -m ipykernel install --user --name=proj-kernel
+
+# Default command: run the training script (override in docker run if needed)
+CMD ["python", "main.py"]
