@@ -9,4 +9,6 @@ def build_arg_parser():
     parser.add_argument('--target-col', type=str, default=None, help='Override: target column')
     parser.add_argument('--mlp-config', type=str, default=None, help='Override: MLP config YAML path')
     parser.add_argument('--tabm-config', type=str, default=None, help='Override: TabM config YAML path')
+    parser.add_argument('--encoder-config', type=str, default=None, help='Override: Encoder config YAML path')
+    parser.add_argument('--vae-encoder-config', type=str, default=None, help='Override: VAE Encoder config YAML path')
     return parser

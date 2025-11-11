@@ -10,7 +10,9 @@ def load_data(path: str | Path)-> pd.DataFrame:
         return df 
     except FileNotFoundError:
         logger.error(f'File not found at {path}')
+        raise
     except Exception as e:
         logger.error(f'Error loading data from {e}')
+        raise
 
     

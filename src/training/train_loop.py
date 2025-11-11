@@ -6,11 +6,15 @@ def train_loop(model, loader, optimizer, loss_fn, device, model_type: str):
         x = x.to(device)
         labels = labels.to(device)
         
+        # Ensure labels have shape (batch_size, 1) to match model output
+        if labels.dim() == 1:
+            labels = labels.unsqueeze(1)  # (batch_size,) -> (batch_size, 1)
+        
         #forward pass
         outputs_raw = model(x)
 
         if model_type == 'mlp':
-            loss = loss_fn(outputs_raw,labels)
+            loss = loss_fn(outputs_raw, labels)
         elif model_type == 'tabm':
             # TabM output shape: (batch_size, k, d_out)
             #outputs = outputs.mean(dim=1)

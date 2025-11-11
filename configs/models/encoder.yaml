@@ -1,0 +1,4 @@
+model:
+  latent_dim: 32
+  hidden_dim: [32, 16]
+  dropout: 0.3

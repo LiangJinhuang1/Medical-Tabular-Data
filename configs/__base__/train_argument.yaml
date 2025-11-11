@@ -1,5 +1,7 @@
 # Training arguments defaults
 seed: 42
+split_size: 0.2
+exclude_cols: [LVEF_dis,LACm]
 
 loader:
   num_workers: 4
@@ -9,5 +11,8 @@ loader:
 
 training:
   learning_rate: 0.001
-  epochs: 10
+  epochs: 50
   batch_size: 64
+  weight_decay: 1e-5
+  apply_normalization: true
+

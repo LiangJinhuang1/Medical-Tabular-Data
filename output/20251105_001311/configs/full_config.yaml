@@ -1,0 +1,36 @@
+paths:
+  train_file: data/train_data.csv
+  target_col: LVEF_dis
+  mlp_config: configs/models/MLP.yaml
+  tabm_config: configs/models/tabM.yaml
+mlp_model:
+  hidden_size:
+  - 32
+  - 16
+  dropout: 0.3
+  batchnorm: true
+  activation: ReLU
+tabm_model:
+  hidden_size:
+  - 32
+  - 32
+  k_heads: 10
+  adapter_dim: null
+  dropout: 0.3
+encoder_model:
+  latent_dim: 32
+  hidden_dim:
+  - 32
+  - 12
+training:
+  learning_rate: 0.001
+  epochs: 50
+  batch_size: 64
+  weight_decay: 1e-5
+seed: 42
+config_paths:
+  exp_path: configs/__base__/exp_path.yaml
+  train_args: configs/__base__/train_argument.yaml
+  mlp_config: configs/models/MLP.yaml
+  tabm_config: configs/models/tabM.yaml
+  encoder_config: configs/models/encoder.yaml

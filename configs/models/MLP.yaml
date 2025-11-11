@@ -1,5 +1,5 @@
 model:
-  hidden_size: [128, 64]
+  hidden_size: [256,128,64]
   dropout: 0.3
   batchnorm: true
   activation: 'ReLU'

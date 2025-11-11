@@ -1,0 +1,44 @@
+paths:
+  train_file: /Users/a21/miniforge3/envs/consulting/Medical_Tabular_Data/dataset/train_data.csv
+  target_col: LACm
+  mlp_config: configs/models/MLP.yaml
+  tabm_config: configs/models/tabM.yaml
+mlp_model:
+  hidden_size:
+  - 256
+  - 128
+  - 64
+  dropout: 0.3
+  batchnorm: true
+  activation: ReLU
+tabm_model:
+  hidden_size:
+  - 256
+  - 128
+  - 64
+  k_heads: 6
+  adapter_dim: null
+  dropout: 0.3
+encoder_model:
+  latent_dim: 32
+  hidden_dim:
+  - 32
+  - 16
+  dropout: 0.3
+training:
+  learning_rate: 0.001
+  epochs: 50
+  batch_size: 64
+  weight_decay: 1e-5
+  apply_normalization: true
+seed: 42
+exclude_cols:
+- LVEF_dis
+- LACa
+config_paths:
+  exp_path: configs/__base__/exp_path.yaml
+  train_args: configs/__base__/train_argument.yaml
+  mlp_config: configs/models/MLP.yaml
+  tabm_config: configs/models/tabM.yaml
+  encoder_config: configs/models/encoder.yaml
+  vae_encoder_config: configs/models/vae_encoder.yaml

@@ -1,5 +1,3 @@
-jupyterlab
-ipykernel
 # Core numerical stack
 numpy
 pandas
@@ -14,3 +12,7 @@ matplotlib
 # Utilities
 PyYAML
 loguru
+
+
+seaborn
+ 

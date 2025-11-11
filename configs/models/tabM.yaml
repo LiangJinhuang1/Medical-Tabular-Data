@@ -1,5 +1,5 @@
 model:
-  hidden_size: [128, 128]
-  k_heads: 8
+  hidden_size: [256,128,64]
+  k_heads: 6
   adapter_dim: null
-  dropout: 0.1
+  dropout: 0.3
