@@ -46,6 +46,7 @@ class Dataset(TorchDataset):
 
         self.features = torch.tensor(X_values, dtype=torch.float32)
         self.label= torch.tensor(y_values, dtype = torch.float32)
+        self.feature_names = X.columns.tolist() # save feature names
 
 
     def __len__(self)-> int:

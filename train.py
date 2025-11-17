@@ -120,14 +120,34 @@ def train(target_col, exclude_cols=None, train_file=None, train_args=None,
         num_epochs = int(training_cfg.get('epochs', 10))
         
         # Train the encoder 
-        train_encoder(model_encoder, train_loader, optimizer_encoder, loss_fn, device, num_epochs, loss_tracker)
+        train_encoder(model_encoder, train_loader, test_loader, optimizer_encoder, loss_fn, device, num_epochs, loss_tracker, experiment_dir)
 
         # Train the VAE encoder
-        train_vae_encoder(model_vae_encoder, train_loader, optimizer_vae_encoder, device, num_epochs, loss_tracker)
+        train_vae_encoder(model_vae_encoder, train_loader, test_loader, optimizer_vae_encoder, device, num_epochs, loss_tracker, experiment_dir)
 
+        # Load best encoder checkpoints
+        checkpoints_dir = experiment_dir / "checkpoints"
+        encoder_best_path = checkpoints_dir / "encoder_best.pt"
+        vae_encoder_best_path = checkpoints_dir / "vae_encoder_best.pt"
+        
+        if encoder_best_path.exists():
+            print(f'\nLoading best encoder from {encoder_best_path}')
+            encoder_checkpoint = torch.load(encoder_best_path, map_location=device)
+            model_encoder.load_state_dict(encoder_checkpoint['model_state_dict'])
+            print(f'Best encoder loaded - Val Loss: {encoder_checkpoint["val_loss"]:.4f} at epoch {encoder_checkpoint["epoch"]+1}')
+        else:
+            print(f'\nWarning: Best encoder checkpoint not found at {encoder_best_path}, using current encoder state')
+        
+        if vae_encoder_best_path.exists():
+            print(f'\nLoading best VAE encoder from {vae_encoder_best_path}')
+            vae_encoder_checkpoint = torch.load(vae_encoder_best_path, map_location=device)
+            model_vae_encoder.load_state_dict(vae_encoder_checkpoint['model_state_dict'])
+            print(f'Best VAE encoder loaded - Val Loss: {vae_encoder_checkpoint["val_loss"]:.4f} at epoch {vae_encoder_checkpoint["epoch"]+1}')
+        else:
+            print(f'\nWarning: Best VAE encoder checkpoint not found at {vae_encoder_best_path}, using current VAE encoder state')
 
     
-        # Create embeddings with frozen encoder
+
         # Create new models with input_dim = encoder_latent_dim for embedding models
         mlp_embedding_model = MLPRegressor(
             in_dim=encoder_latent_dim,  # Use encoder's latent dimension, not original input_dim
@@ -165,12 +185,12 @@ def train(target_col, exclude_cols=None, train_file=None, train_args=None,
 
       
 
-        mlp_embedding = EncoderEmbedding(model_encoder, mlp_embedding_model,freeze_encoder=True)
-        tabm_embedding = EncoderEmbedding(model_encoder, tabm_embedding_model, freeze_encoder=True)
+        mlp_embedding = EncoderEmbedding(model_encoder, mlp_embedding_model)
+        tabm_embedding = EncoderEmbedding(model_encoder, tabm_embedding_model)
 
 
-        mlp_vae_embedding = VAEEncoderMLP(model_vae_encoder, mlp_vae_embedding_model, use_mu=True, use_log_var=False, freeze_encoder=True)
-        tabm_vae_embedding = VAEEncoderMLP(model_vae_encoder, tabm_vae_embedding_model, use_mu=True, use_log_var=False, freeze_encoder=True)
+        mlp_vae_embedding = VAEEncoderMLP(model_vae_encoder, mlp_vae_embedding_model, use_mu=True, use_log_var=False)
+        tabm_vae_embedding = VAEEncoderMLP(model_vae_encoder, tabm_vae_embedding_model, use_mu=True, use_log_var=False)
 
         optimizer_mlp_embedding = Adam(mlp_embedding.parameters(), lr=lr)
         optimizer_tabm_embedding = Adam(tabm_embedding.parameters(), lr=lr)

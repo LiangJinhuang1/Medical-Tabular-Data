@@ -3,16 +3,12 @@ import torch.nn as nn
 from torch import Tensor
 
 class VAEEncoderMLP(nn.Module):
-    def __init__(self, encoder, model, use_mu=True, use_log_var=True,freeze_encoder=True) -> None:
+    def __init__(self, encoder, model, use_mu=True, use_log_var=True) -> None:
         super().__init__()
         self.encoder = encoder
         self.model = model
         self.use_mu = use_mu
         self.use_log_var = use_log_var
-        self.freeze_encoder = freeze_encoder
-        if freeze_encoder:
-            for param in self.encoder.parameters():
-                param.requires_grad = False
                 
     def forward(self, x:Tensor) -> Tensor:
         recon, mu, log_var, z = self.encoder(x, training=False)
